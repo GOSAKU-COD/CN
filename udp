@@ -1,0 +1,25 @@
+SERVER:
+from socket import *
+serverPort = 12000
+serverSocket = socket(AF_INET, SOCK_DGRAM)
+serverSocket.bind((&quot;127.0.0.1&quot;, serverPort))
+print(&quot;The server is ready to receive&quot;)
+while 1:
+sentence, clientAddress = serverSocket.recvfrom(2048)
+file = open(sentence, &quot;r&quot;)
+l = file.read(2048)
+serverSocket.sendto(bytes(l, &quot;utf-8&quot;), clientAddress)
+print(&quot;Sent back to client: &quot;, l)
+file.close()
+
+CLIENT:
+from socket import *
+serverName = &quot;127.0.0.1&quot;
+serverPort = 12000
+clientSocket = socket(AF_INET, SOCK_DGRAM)
+sentence = input(&quot;Enter file name: &quot;)
+
+clientSocket.sendto(bytes(sentence, &quot;utf-8&quot;), (serverName, serverPort))
+filecontents, serverAddress = clientSocket.recvfrom(2048)
+print(&quot;From Server: &quot;, filecontents.decode())
+clientSocket.close()
